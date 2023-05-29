@@ -60,10 +60,12 @@ def get_industry_list(con):
 def get_dashboard_data(con, model:DashboardFilterModel):
     # sql = 'exec TradingTrial.[dbo].[TRADE_USP_WEB_DASHBOARD_SYMBOL](?,?,?,?,?,?,?,?)'
     # values = ('HDFC', '', '', '', '', '', '', '')
+    
+    print(model)
     try:
         cursor = con.cursor()
         cursor.execute(
-            "{CALL [TRADE_USP_WEB_DASHBOARD_SYMBOL](?,?,?,?,?,?,?,?)}", (model.symbol, '', '', '', '', 0, 0, 0))
+            "{CALL [TRADE_USP_WEB_DASHBOARD_SYMBOL](?,?,?,?,?,?,?,?)}", (model.symbol, model.nifty_50, model.nifty_it, model.nifty_bank, model.industry, model.score_filter, model.avg_total_score_filter, model.deliverable_percent_filter))
         ret = mssql_result2dict(cursor)
         con.commit()
     except pyodbc.Error as e:
