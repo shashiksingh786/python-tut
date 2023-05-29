@@ -32,24 +32,7 @@ except pyodbc.Error as e:
     print(e)
     exit()
 
-# def connect_db():
-#     driver = config.DRIVER
-#     server = config.SERVER
-#     database = config.SERVER
-#     con_str = ("Driver={SQL Server Native Client 11.0};"
-#                "Server=SHASHI-DELL5620;"
-#                "Database=TradingTrial;"
-#                "Trusted_Connection=yes;")
-#     #  f'DRIVER={driver}; SERVER={server};DATABASE={database};TRUSTED_CONNECTION=yes'
-#     connection = pyodbc.connect(con_str)
-#     connection.autocommit = True
-#     cursor = connection.cursor()
-#     print('connection successfull with database')
-#     return connection
-
-# conn = connect_db()
-
-
+ 
 @app.get("/")
 def root():
     return {"message": "welcome to my first python api"}
