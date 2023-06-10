@@ -29,6 +29,39 @@ def mssql_result2dict(cursor):
     return ret
 
 
+def mssql_multiple_result2dict(cursor):
+    try:
+        result = []
+        columns = [column[0] for column in cursor.description]
+        for row in cursor.fetchall():
+            result.append(dict(zip(columns, row)))
+
+        resarr = []
+        resarr.append(result)
+
+        # print(result)
+
+        # for multiple table return from dataset
+        while cursor.nextset():
+            res = []
+            columns = [column[0] for column in cursor.description]
+            for row in cursor.fetchall():
+                res.append(dict(zip(columns, row)))
+
+            resarr.append(res)
+
+        # Check for results
+        if len(resarr) > 0:
+            ret = resarr
+        else:
+            ret = {"message": "no results found"}
+    except pyodbc.Error as e:
+        print(e)
+        ret = {"message": "Internal Database Query Error"}
+
+    return ret
+
+
 def fetch_data(con):
     query = 'select top 10 * from [TRADE_TBL_FULLBHAV_DATA_SUMMARISED]'
     try:
@@ -57,10 +90,10 @@ def get_industry_list(con):
     return ret
 
 
-def get_dashboard_data(con, model:DashboardFilterModel):
+def get_dashboard_data(con, model: DashboardFilterModel):
     # sql = 'exec TradingTrial.[dbo].[TRADE_USP_WEB_DASHBOARD_SYMBOL](?,?,?,?,?,?,?,?)'
     # values = ('HDFC', '', '', '', '', '', '', '')
-    
+
     print(model)
     try:
         cursor = con.cursor()
@@ -75,13 +108,12 @@ def get_dashboard_data(con, model:DashboardFilterModel):
     return ret
 
 
-def get_symbol_data(con, symbol:str):
-     
+def get_symbol_data(con, symbol: str):
+
     try:
         cursor = con.cursor()
-        cursor.execute(
-            "{CALL [TRADE_USP_SYMBOL_WISE_DETAILS](?)}", (symbol))
-        ret = mssql_result2dict(cursor)
+        cursor.execute("{CALL [TRADE_USP_SYMBOL_WISE_DETAILS](?)}", (symbol))
+        ret = mssql_multiple_result2dict(cursor)
         con.commit()
     except pyodbc.Error as e:
         print(f'SQL Query Failed: {e}')
