@@ -53,6 +53,11 @@ async def get_dashboard_data(model: DashboardFilterModel):
     return trades.get_dashboard_data(conn, model)
 
 
+@app.post("/symboldetails")
+async def get_dashboard_data(modal: DashboardFilterModel):
+    return trades.get_symbol_data(conn, modal.symbol)
+
+
 # @app.get("/createpost") = Body(..., embed=True)
 # def create_post(payload: dict = Body(...)):
 #     return {"message": "welcome to my first python api"}

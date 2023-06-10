@@ -73,3 +73,18 @@ def get_dashboard_data(con, model:DashboardFilterModel):
         ret = {"message": f'{e}'}
 
     return ret
+
+
+def get_symbol_data(con, symbol:str):
+     
+    try:
+        cursor = con.cursor()
+        cursor.execute(
+            "{CALL [TRADE_USP_SYMBOL_WISE_DETAILS](?)}", (symbol))
+        ret = mssql_result2dict(cursor)
+        con.commit()
+    except pyodbc.Error as e:
+        print(f'SQL Query Failed: {e}')
+        ret = {"message": f'{e}'}
+
+    return ret
